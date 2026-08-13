@@ -1,0 +1,13 @@
+{
+  "_readme": "One entry per file in this folder. 'match' is what gets compared against the live ADS-B record — see src/matcher.js for exactly how. Add a new object here every time you add a new visual; nothing else needs to change.",
+  "liveries": [
+    { "file": "Emirates_A380_.webp",  "match": { "typeCode": "A388", "airlineIcao": "UAE" }, "accent": "#A6192E" },
+    { "file": "BA_A380_.webp",        "match": { "typeCode": "A388", "airlineIcao": "BAW" }, "accent": "#1F3D7A" },
+    { "file": "Qantas_A380_.webp",    "match": { "typeCode": "A388", "airlineIcao": "QFA" }, "accent": "#C50000" },
+    { "file": "Singapore_A380_.webp", "match": { "typeCode": "A388", "airlineIcao": "SIA" }, "accent": "#8A6E1B" },
+    { "file": "Korea_A380_.webp",     "match": { "typeCode": "A388", "airlineIcao": "KAL" }, "accent": "#1F6E96" },
+    { "file": "Etihad_A380_.webp",    "match": { "typeCode": "A388", "airlineIcao": "ETD" }, "accent": "#7E5A0C" },
+    { "file": "Luftansa_A380.webp",   "match": { "typeCode": "A388", "airlineIcao": "DLH" }, "accent": "#05164D" },
+    { "file": "ANA_A380.webp",        "match": { "typeCode": "A388", "airlineIcao": "ANA" }, "accent": "#13448F" }
+  ]
+}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Aircraft Scanner</title>
+  <link rel="stylesheet" href="app/style.css">
+</head>
+<body>
+  <main id="scanner" class="scanner is-empty">
+    <div id="scanner-banner" class="scanner__banner" hidden></div>
+    <div id="scanner-image" class="scanner__image"></div>
+    <section class="scanner__identity">
+      <h1 id="field-airline">—</h1>
+      <p id="field-type">—</p>
+      <dl class="scanner__stats">
+        <div><dt>Reg</dt><dd id="field-reg">—</dd></div>
+        <div><dt>Flight</dt><dd id="field-flight">—</dd></div>
+        <div><dt>Alt</dt><dd id="field-alt">—</dd></div>
+        <div><dt>Speed</dt><dd id="field-gs">—</dd></div>
+        <div><dt>Dist</dt><dd id="field-dst">—</dd></div>
+      </dl>
+    </section>
+    <p id="scanner-status" class="scanner__status">Loading…</p>
+  </main>
+
+  <dialog id="position-form" class="position-form">
+    <form method="dialog">
+      <h2>Set location</h2>
+      <p>Used to find aircraft near you.</p>
+      <label>Latitude <input type="number" id="input-lat" step="any" required></label>
+      <label>Longitude <input type="number" id="input-lon" step="any" required></label>
+      <button type="submit">Use this location</button>
+    </form>
+  </dialog>
+
+  <button id="edit-location" class="edit-location" title="Edit location" aria-label="Edit location">📍</button>
+
+  <script type="module" src="app/app.js"></script>
+</body>
+</html>

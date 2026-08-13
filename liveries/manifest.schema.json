@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Livery manifest entry",
+  "description": "One entry per visual asset. The manifest is the ONLY place that knows how to turn an ADS-B record into a file path — matcher.js reads it, nothing else hardcodes airline/type logic.",
+  "type": "object",
+  "required": ["file", "match"],
+  "properties": {
+    "file": {
+      "type": "string",
+      "description": "Path relative to liveries/, e.g. 'Emirates_A380_.webp'. Must exist on disk — build validates this."
+    },
+    "match": {
+      "type": "object",
+      "description": "What this asset depicts. At least one of typeCode/airlineIcao required.",
+      "properties": {
+        "typeCode": {
+          "type": "string",
+          "description": "ICAO type designator, e.g. 'A388' (A380-800), 'B77W' (777-300ER). Source of truth: db/aircraft.sqlite airframe.type_code, or https://www.icao.int/publications/DOC8643"
+        },
+        "airlineIcao": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{3}$",
+          "description": "3-letter ICAO carrier code — same string as the first 3 chars of that airline's callsigns. Source of truth: db/airlines.json keys."
+        }
+      }
+    },
+    "accent": {
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}$",
+      "description": "Hex color used for UI chrome (route arc, callsign text) when this asset is shown. Pick something that reads on your background, not necessarily the exact brand color — see prior note about navy-on-dark needing to lighten."
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional free-form, e.g. [\"wide-scale\", \"registration:G-XLEA\"]. Not used by matching, just notes for humans."
+    }
+  }
+}
