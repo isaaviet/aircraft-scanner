@@ -26,7 +26,7 @@ html, body {
   justify-content: center;
   padding: calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 16px);
   position: relative;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .scanner__banner {
@@ -42,12 +42,14 @@ html, body {
   z-index: 10;
 }
 
-/* The bordered "poster" — a light frame holding a bold, single-color panel. */
+/* The bordered "poster" — a light frame holding a bold, single-color panel,
+   proportioned like a sheet of A4 (210mm : 297mm) regardless of viewport. */
 
 .poster-frame {
-  max-width: 420px;
-  width: 100%;
+  width: min(420px, 100%);
+  aspect-ratio: 210 / 297;
   margin: 0 auto;
+  flex-shrink: 0;
   background: var(--frame-bg);
   border: 1px solid var(--frame-border);
   border-radius: 6px;
@@ -61,7 +63,7 @@ html, body {
   color: var(--panel-text);
   display: flex;
   flex-direction: column;
-  min-height: 62vh;
+  height: 100%;
   padding: 22px 18px 18px;
   transition: background-color 300ms ease;
 }
@@ -69,10 +71,9 @@ html, body {
 .poster-route {
   margin: 0;
   text-align: center;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  line-height: 1.35;
   color: var(--panel-text);
 }
 

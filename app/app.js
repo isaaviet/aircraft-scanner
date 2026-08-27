@@ -201,9 +201,9 @@ async function lookupRoute(hex, flight) {
       if (res.ok) {
         const data = await res.json();
         const fr = data.response?.flightroute;
-        const originCode = fr?.origin?.iata_code || fr?.origin?.icao_code;
-        const destCode = fr?.destination?.iata_code || fr?.destination?.icao_code;
-        if (originCode && destCode) route = `${originCode} → ${destCode}`;
+        const originName = fr?.origin?.name || fr?.origin?.municipality || fr?.origin?.iata_code;
+        const destName = fr?.destination?.name || fr?.destination?.municipality || fr?.destination?.iata_code;
+        if (originName && destName) route = `${originName} → ${destName}`;
       }
     } catch { /* network hiccup — leave route unresolved, fall back to callsign */ }
   }
