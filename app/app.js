@@ -17,6 +17,12 @@ const SWITCH_MARGIN_NM = 0.05;      // hysteresis so near-equidistant aircraft d
 const POSITION_KEY = 'aircraft-scanner:position';
 const DEFAULT_ACCENT = '#4b5563';   // neutral slate for non-exact tiers
 
+// Callsign -> origin/destination route. Not part of the ADS-B feed itself
+// (that only carries the callsign) — a separate, CORS-friendly lookup.
+// Confirmed with a real cross-origin browser fetch, no proxy needed.
+const ROUTE_API = 'https://api.adsbdb.com/v0/callsign';
+const routeCache = new Map(); // hex -> route text | null (looked up, no route on file)
+
 // Material Symbols "flight" glyph — a plain top-down plane, not aircraft-specific art.
 const PLACEHOLDER_SVG = `<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
   <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2.5 1.5V22l4-1 4 1v-1.5L13 19v-5.5l8 2.5z"/>
@@ -32,6 +38,7 @@ const els = {
   inputLat: document.getElementById('input-lat'),
   inputLon: document.getElementById('input-lon'),
   fields: {
+    route: document.getElementById('field-route'),
     airline: document.getElementById('field-airline'),
     type: document.getElementById('field-type'),
     reg: document.getElementById('field-reg'),
@@ -181,6 +188,30 @@ function pickAircraft(candidates) {
 }
 
 /* ---------------------------------------------------------------
+   Route lookup (callsign -> origin/destination), cached per hex and
+   only ever fetched when the displayed aircraft changes.
+   --------------------------------------------------------------- */
+
+async function lookupRoute(hex, flight) {
+  if (routeCache.has(hex)) return routeCache.get(hex);
+  let route = null;
+  if (flight) {
+    try {
+      const res = await fetch(`${ROUTE_API}/${encodeURIComponent(flight)}`);
+      if (res.ok) {
+        const data = await res.json();
+        const fr = data.response?.flightroute;
+        const originCode = fr?.origin?.iata_code || fr?.origin?.icao_code;
+        const destCode = fr?.destination?.iata_code || fr?.destination?.icao_code;
+        if (originCode && destCode) route = `${originCode} → ${destCode}`;
+      }
+    } catch { /* network hiccup — leave route unresolved, fall back to callsign */ }
+  }
+  routeCache.set(hex, route);
+  return route;
+}
+
+/* ---------------------------------------------------------------
    Resolve identity + visual, then render
    --------------------------------------------------------------- */
 
@@ -203,9 +234,10 @@ async function resolveAndRender(ac) {
   const flight = (ac.flight || '').trim();
   const airline = db.lookupAirlineFromCallsign(flight);
   const { tier, entry } = matcher.match({ t: typeCode, flight });
+  const routeText = isSameAircraft ? state.current.routeText : await lookupRoute(ac.hex, flight);
 
   const record = {
-    hex: ac.hex, flight, typeCode, typeName, registration,
+    hex: ac.hex, flight, typeCode, typeName, registration, routeText,
     airlineName: airline?.name ?? null,
     alt: ac.alt_baro, dst: ac.dst, gs: ac.gs,
     tier,
@@ -226,6 +258,7 @@ function render(record, { isSameAircraft }) {
     els.root.classList.add('is-entering');
   }
 
+  els.fields.route.textContent = record.routeText || record.flight || '—';
   els.fields.airline.textContent = record.airlineName || 'Unknown operator';
   els.fields.type.textContent = record.typeName || record.typeCode || 'Unknown type';
   els.fields.reg.textContent = record.registration || '—';

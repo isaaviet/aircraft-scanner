@@ -9,18 +9,23 @@
 <body>
   <main id="scanner" class="scanner is-empty">
     <div id="scanner-banner" class="scanner__banner" hidden></div>
-    <div id="scanner-image" class="scanner__image"></div>
-    <section class="scanner__identity">
-      <h1 id="field-airline">—</h1>
-      <p id="field-type">—</p>
-      <dl class="scanner__stats">
-        <div><dt>Reg</dt><dd id="field-reg">—</dd></div>
-        <div><dt>Flight</dt><dd id="field-flight">—</dd></div>
-        <div><dt>Alt</dt><dd id="field-alt">—</dd></div>
-        <div><dt>Speed</dt><dd id="field-gs">—</dd></div>
-        <div><dt>Dist</dt><dd id="field-dst">—</dd></div>
-      </dl>
-    </section>
+    <div class="poster-frame">
+      <div id="poster-panel" class="poster-panel">
+        <p id="field-route" class="poster-route">—</p>
+        <div id="scanner-image" class="poster-image"></div>
+        <div class="poster-caption">
+          <h1 id="field-airline">—</h1>
+          <p id="field-type">—</p>
+        </div>
+        <dl class="poster-stats">
+          <div><dt>Reg</dt><dd id="field-reg">—</dd></div>
+          <div><dt>Flight</dt><dd id="field-flight">—</dd></div>
+          <div><dt>Alt</dt><dd id="field-alt">—</dd></div>
+          <div><dt>Speed</dt><dd id="field-gs">—</dd></div>
+          <div><dt>Dist</dt><dd id="field-dst">—</dd></div>
+        </dl>
+      </div>
+    </div>
     <p id="scanner-status" class="scanner__status">Loading…</p>
   </main>
 
