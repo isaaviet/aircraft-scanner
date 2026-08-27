@@ -1,10 +1,11 @@
 :root {
-  --accent: #4b5563;
+  --accent: #D9D4C6;
   --page-bg: #ecead2;
   --frame-bg: #faf8f0;
   --frame-border: #ded8c2;
-  --panel-text: #fff;
-  --panel-text-dim: rgba(255, 255, 255, 0.75);
+  --panel-text: #2b2a26;
+  --panel-text-dim: rgba(43, 42, 38, 0.68);
+  --panel-chip-bg: rgba(0, 0, 0, 0.07);
   --ink: #24262b;
   --ink-dim: #6b6f76;
 }
@@ -117,27 +118,29 @@ html, body {
 .poster-stats {
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
 }
 
 .poster-stats > div {
-  background: rgba(255, 255, 255, 0.14);
+  background: var(--panel-chip-bg);
   border-radius: 6px;
-  padding: 7px 9px;
+  padding: 6px 4px;
+  text-align: center;
 }
 
 .poster-stats dt {
-  font-size: 0.65rem;
+  font-size: 0.55rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   color: var(--panel-text-dim);
 }
 
 .poster-stats dd {
   margin: 2px 0 0;
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   font-weight: 600;
+  overflow-wrap: break-word;
 }
 
 .scanner__status {
@@ -236,7 +239,7 @@ html, body {
   border: none;
   border-radius: 8px;
   background: var(--accent);
-  color: #fff;
+  color: var(--panel-text);
   font-weight: 600;
   cursor: pointer;
 }

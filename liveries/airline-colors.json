@@ -1,0 +1,13 @@
+{
+  "_readme": "ICAO airline code -> pastel brand color for the scanner card background. Independent of manifest.json and used regardless of match tier — we know the operating airline (from the flight's callsign) far more often than we have livery art for the specific airframe, so color should track the airline, not the art. Add an entry any time a new airline's liveries show up often enough to be worth a distinct color; unlisted airlines fall back to a neutral pastel in app.js.",
+  "colors": {
+    "UAE": "#F4C7C6",
+    "BAW": "#C9D6F0",
+    "QFA": "#F6D3B9",
+    "SIA": "#F0E0A9",
+    "KAL": "#BAE0EA",
+    "ETD": "#E8D4A1",
+    "DLH": "#CCD3E8",
+    "ANA": "#BCD9F0"
+  }
+}

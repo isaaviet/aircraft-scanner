@@ -15,7 +15,18 @@ const POLL_INTERVAL_MS = 8000;      // well under any upstream's rate limit
 const MISS_TOLERANCE = 2;           // consecutive empty polls before clearing to the idle state
 const SWITCH_MARGIN_NM = 0.05;      // hysteresis so near-equidistant aircraft don't ping-pong
 const POSITION_KEY = 'aircraft-scanner:position';
-const DEFAULT_ACCENT = '#4b5563';   // neutral slate for non-exact tiers
+const DEFAULT_ACCENT = '#D9D4C6';   // neutral pastel when the airline itself is unknown
+
+// Airline (not livery-art) pastel colors, keyed by ICAO code — used for the
+// card background on every tier, since we know the operating airline for
+// almost every scheduled flight but only have art for a handful of them.
+// See liveries/airline-colors.json for why this lives there, not here.
+let airlineColors = {};
+async function loadAirlineColors() {
+  const res = await fetch('./liveries/airline-colors.json');
+  const data = await res.json();
+  airlineColors = data.colors || {};
+}
 
 // Callsign -> origin/destination route. Not part of the ADS-B feed itself
 // (that only carries the callsign) — a separate, CORS-friendly lookup.
@@ -57,7 +68,7 @@ main().catch((err) => {
 });
 
 async function main() {
-  await Promise.all([db.preload(), matcher.ready()]);
+  await Promise.all([db.preload(), matcher.ready(), loadAirlineColors()]);
   state.position = await resolvePosition();
   wireEditLocationButton();
   scheduleNextPoll(0);
@@ -232,6 +243,7 @@ async function resolveAndRender(ac) {
   }
 
   const flight = (ac.flight || '').trim();
+  const airlineIcao = flight.slice(0, 3).toUpperCase();
   const airline = db.lookupAirlineFromCallsign(flight);
   const { tier, entry } = matcher.match({ t: typeCode, flight });
   const routeText = isSameAircraft ? state.current.routeText : await lookupRoute(ac.hex, flight);
@@ -242,7 +254,7 @@ async function resolveAndRender(ac) {
     alt: ac.alt_baro, dst: ac.dst, gs: ac.gs,
     tier,
     entry: tier === 'exact' ? entry : null,
-    accent: tier === 'exact' ? entry.accent : DEFAULT_ACCENT,
+    accent: airlineColors[airlineIcao] || DEFAULT_ACCENT,
   };
 
   render(record, { isSameAircraft });
