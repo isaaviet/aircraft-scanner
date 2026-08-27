@@ -4,9 +4,14 @@ import { LiveryMatcher } from '../src/matcher.js';
 const db = new AircraftDB('./db');
 const matcher = new LiveryMatcher('./liveries/manifest.json');
 
-const FEED_BASE = 'https://api.airplanes.live/v2/point';
+// Not fetched directly — airplanes.live 403s automated/proxied clients, and
+// the sibling APIs (adsb.lol, adsb.fi) don't send CORS headers of their own
+// and block Cloudflare-Worker-proxied traffic. This goes through a Netlify
+// Function that fetches adsb.fi server-side and adds the CORS header back;
+// see aircraft-scanner-proxy/netlify/functions/point.js for the full story.
+const FEED_BASE = 'https://comfy-salmiakki-f8f3bf.netlify.app/.netlify/functions/point';
 const RADIUS_NM = 30;
-const POLL_INTERVAL_MS = 8000;      // ~0.125 req/s, well under airplanes.live's 1/s cap
+const POLL_INTERVAL_MS = 8000;      // well under any upstream's rate limit
 const MISS_TOLERANCE = 2;           // consecutive empty polls before clearing to the idle state
 const SWITCH_MARGIN_NM = 0.05;      // hysteresis so near-equidistant aircraft don't ping-pong
 const POSITION_KEY = 'aircraft-scanner:position';
@@ -132,7 +137,7 @@ async function pollOnce() {
   state.pollInFlight = true;
   try {
     const { lat, lon } = state.position;
-    const res = await fetch(`${FEED_BASE}/${lat}/${lon}/${RADIUS_NM}`);
+    const res = await fetch(`${FEED_BASE}?lat=${lat}&lon=${lon}&radius=${RADIUS_NM}`);
     if (!res.ok) throw new Error(`feed HTTP ${res.status}`);
     const { ac = [] } = await res.json();
     await handleFeed(ac);
